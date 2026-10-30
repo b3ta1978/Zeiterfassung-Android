@@ -1,0 +1,6 @@
+{
+  "name": "ZeitOrt Mobil — Zeiterfassung & Einsatzbericht",
+  "description": "Mobile Kunden-, GPS-Standort- und Arbeitszeiterfassung für Android mit Tages- und Monatsdruck sowie PDF- und Excel-Export.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

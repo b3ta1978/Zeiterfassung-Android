@@ -1,0 +1,147 @@
+import { CompanyProfile, Customer, TimeEntry } from '../types';
+import { getTodayIsoDate, shiftIsoDate } from '../utils/timeAndFormat';
+
+export const DEFAULT_COMPANY_PROFILE: CompanyProfile = {
+  companyName: 'Meisterbetrieb Haustechnik & Service',
+  employeeName: 'Matthias Heidorn',
+  employeeId: 'MA-104',
+};
+
+export function createInitialCustomers(): Customer[] {
+  return [
+    {
+      id: 'cust-1',
+      name: 'Hausverwaltung Weber GmbH',
+      customerNumber: 'KD-1001',
+      contactPerson: 'Sabine Weber',
+      phone: '040 8821940',
+      defaultStreet: 'Eppendorfer Landstraße',
+      defaultHouseNumber: '74',
+      defaultPostalCode: '20249',
+      defaultCity: 'Hamburg',
+      createdAt: '2026-09-12T08:00:00.000Z',
+    },
+    {
+      id: 'cust-2',
+      name: 'Bäckerei & Konditorei Albrecht',
+      customerNumber: 'KD-1002',
+      contactPerson: 'Thomas Albrecht',
+      phone: '040 4192730',
+      defaultStreet: 'Mühlenkamp',
+      defaultHouseNumber: '19',
+      defaultPostalCode: '22303',
+      defaultCity: 'Hamburg',
+      createdAt: '2026-09-18T09:30:00.000Z',
+    },
+    {
+      id: 'cust-3',
+      name: 'Autohaus Lindner KG',
+      customerNumber: 'KD-1003',
+      contactPerson: 'Markus Lindner',
+      phone: '040 6910455',
+      defaultStreet: 'Nedderfeld',
+      defaultHouseNumber: '112',
+      defaultPostalCode: '22529',
+      defaultCity: 'Hamburg',
+      createdAt: '2026-10-01T10:15:00.000Z',
+    },
+    {
+      id: 'cust-4',
+      name: 'Praxiszentrum Dr. Hartmann',
+      customerNumber: 'KD-1004',
+      contactPerson: 'Dr. Julia Hartmann',
+      phone: '040 3309812',
+      defaultStreet: 'Rothenbaumchaussee',
+      defaultHouseNumber: '45',
+      defaultPostalCode: '20148',
+      defaultCity: 'Hamburg',
+      createdAt: '2026-10-05T14:00:00.000Z',
+    },
+  ];
+}
+
+export function createInitialEntries(): TimeEntry[] {
+  const today = getTodayIsoDate();
+  const yesterday = shiftIsoDate(today, -1);
+  const threeDaysAgo = shiftIsoDate(today, -3);
+  const sixDaysAgo = shiftIsoDate(today, -6);
+
+  return [
+    {
+      id: 'entry-1',
+      customerId: 'cust-1',
+      customerName: 'Hausverwaltung Weber GmbH',
+      customerNumber: 'KD-1001',
+      date: sixDaysAgo,
+      street: 'Eppendorfer Landstraße',
+      houseNumber: '74',
+      postalCode: '20249',
+      city: 'Hamburg',
+      latitude: 53.59142,
+      longitude: 9.98514,
+      startTime: '08:00',
+      endTime: '11:45',
+      breakMinutes: 15,
+      durationMinutes: 210,
+      note: 'Wartung Heizungsanlage & Vorlaufprüfung',
+      createdAt: `${sixDaysAgo}T11:45:00.000Z`,
+    },
+    {
+      id: 'entry-2',
+      customerId: 'cust-2',
+      customerName: 'Bäckerei & Konditorei Albrecht',
+      customerNumber: 'KD-1002',
+      date: threeDaysAgo,
+      street: 'Mühlenkamp',
+      houseNumber: '19',
+      postalCode: '22303',
+      city: 'Hamburg',
+      latitude: 53.58195,
+      longitude: 10.01241,
+      startTime: '07:30',
+      endTime: '10:30',
+      breakMinutes: 0,
+      durationMinutes: 180,
+      note: 'Kühlzellensteuerung geprüft & Fühler getauscht',
+      createdAt: `${threeDaysAgo}T10:30:00.000Z`,
+    },
+    {
+      id: 'entry-3',
+      customerId: 'cust-3',
+      customerName: 'Autohaus Lindner KG',
+      customerNumber: 'KD-1003',
+      date: yesterday,
+      street: 'Nedderfeld',
+      houseNumber: '112',
+      postalCode: '22529',
+      city: 'Hamburg',
+      latitude: 53.60128,
+      longitude: 9.96482,
+      startTime: '09:15',
+      endTime: '14:15',
+      breakMinutes: 30,
+      durationMinutes: 270,
+      note: 'Montage Druckluftleitung Werkstatthalle 2',
+      createdAt: `${yesterday}T14:15:00.000Z`,
+    },
+    {
+      id: 'entry-4',
+      customerId: 'cust-4',
+      customerName: 'Praxiszentrum Dr. Hartmann',
+      customerNumber: 'KD-1004',
+      date: today,
+      street: 'Rothenbaumchaussee',
+      houseNumber: '45',
+      postalCode: '20148',
+      city: 'Hamburg',
+      latitude: 53.57061,
+      longitude: 9.98975,
+      startTime: '07:45',
+      endTime: '09:30',
+      breakMinutes: 0,
+      durationMinutes: 105,
+      note: 'Lüftungsfilter gewechselt & Funktionsprotokoll',
+      createdAt: `${today}T09:30:00.000Z`,
+    },
+  ];
+}
