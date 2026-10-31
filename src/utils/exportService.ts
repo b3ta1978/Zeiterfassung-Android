@@ -218,13 +218,11 @@ export function exportEntriesToPdf(options: ExportReportOptions): void {
   doc.setDrawColor(148, 163, 184);
   doc.setLineWidth(0.3);
   doc.line(14, sigY, 92, sigY);
-  doc.line(118, sigY, 196, sigY);
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8.5);
   doc.setTextColor(100, 116, 139);
   doc.text('Datum, Unterschrift Mitarbeiter', 14, sigY + 5);
-  doc.text('Datum, Unterschrift Kunde / Auftraggeber', 118, sigY + 5);
 
   doc.save(`${getFileSafeSlug(options)}.pdf`);
 }
@@ -475,7 +473,6 @@ export function downloadPrintableHtmlFile(options: ExportReportOptions): void {
   </table>
   <div class="sigs">
     <div class="sig-box">Ort, Datum / Unterschrift Mitarbeiter</div>
-    <div class="sig-box">Ort, Datum / Unterschrift Kunde</div>
   </div>
 </body>
 </html>`;

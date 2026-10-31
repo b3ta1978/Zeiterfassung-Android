@@ -567,12 +567,9 @@ export const PrintableReportView: React.FC<PrintableReportViewProps> = ({
         )}
 
         {/* Signature Block for Print / Sign-off */}
-        <div className="mt-12 pt-6 grid grid-cols-1 sm:grid-cols-2 gap-10">
+        <div className="mt-12 pt-6 max-w-sm">
           <div className="border-t border-slate-400 pt-2 text-xs text-slate-600">
             Ort, Datum · Unterschrift Mitarbeiter ({profile.employeeName || 'Techniker'})
-          </div>
-          <div className="border-t border-slate-400 pt-2 text-xs text-slate-600">
-            Ort, Datum · Unterschrift Kunde / Auftraggeber
           </div>
         </div>
       </div>
