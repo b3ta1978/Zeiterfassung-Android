@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   CheckCircle2,
   Clock,
+  Edit3,
   FileSpreadsheet,
   FileText,
   Loader2,
@@ -35,6 +36,7 @@ interface TimeTrackerCardProps {
   onJumpToDayPrint: (isoDate: string) => void;
   onExportDayPdf: (isoDate: string) => void;
   onExportDayExcel: (isoDate: string) => void;
+  onEditEntry?: (entry: TimeEntry) => void;
 }
 
 export const TimeTrackerCard: React.FC<TimeTrackerCardProps> = ({
@@ -47,6 +49,7 @@ export const TimeTrackerCard: React.FC<TimeTrackerCardProps> = ({
   onJumpToDayPrint,
   onExportDayPdf,
   onExportDayExcel,
+  onEditEntry,
 }) => {
   const [gpsLoading, setGpsLoading] = useState(false);
   const [gpsStatusMsg, setGpsStatusMsg] = useState<string | null>(null);
@@ -240,31 +243,44 @@ export const TimeTrackerCard: React.FC<TimeTrackerCardProps> = ({
             </button>
           </div>
 
-          <div className="mt-3 grid grid-cols-3 gap-2">
-            <button
-              type="button"
-              onClick={() => onJumpToDayPrint(lastCompleted.date)}
-              className="min-h-[42px] px-3 rounded-lg bg-white border border-emerald-300 hover:bg-emerald-50 text-xs font-semibold text-slate-900 inline-flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer"
-            >
-              <Printer className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
-              Druckansicht
-            </button>
-            <button
-              type="button"
-              onClick={() => onExportDayPdf(lastCompleted.date)}
-              className="min-h-[42px] px-3 rounded-lg bg-white border border-emerald-300 hover:bg-emerald-50 text-xs font-semibold text-slate-900 inline-flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer"
-            >
-              <FileText className="w-3.5 h-3.5 text-blue-700 shrink-0" />
-              PDF
-            </button>
-            <button
-              type="button"
-              onClick={() => onExportDayExcel(lastCompleted.date)}
-              className="min-h-[42px] px-3 rounded-lg bg-white border border-emerald-300 hover:bg-emerald-50 text-xs font-semibold text-slate-900 inline-flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer"
-            >
-              <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
-              Excel
-            </button>
+          <div className="mt-3 space-y-2">
+            <div className="grid grid-cols-3 gap-2">
+              <button
+                type="button"
+                onClick={() => onJumpToDayPrint(lastCompleted.date)}
+                className="min-h-[42px] px-3 rounded-lg bg-white border border-emerald-300 hover:bg-emerald-50 text-xs font-semibold text-slate-900 inline-flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer"
+              >
+                <Printer className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+                Druckansicht
+              </button>
+              <button
+                type="button"
+                onClick={() => onExportDayPdf(lastCompleted.date)}
+                className="min-h-[42px] px-3 rounded-lg bg-white border border-emerald-300 hover:bg-emerald-50 text-xs font-semibold text-slate-900 inline-flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer"
+              >
+                <FileText className="w-3.5 h-3.5 text-blue-700 shrink-0" />
+                PDF
+              </button>
+              <button
+                type="button"
+                onClick={() => onExportDayExcel(lastCompleted.date)}
+                className="min-h-[42px] px-3 rounded-lg bg-white border border-emerald-300 hover:bg-emerald-50 text-xs font-semibold text-slate-900 inline-flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer"
+              >
+                <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+                Excel
+              </button>
+            </div>
+
+            {onEditEntry && (
+              <button
+                type="button"
+                onClick={() => onEditEntry(lastCompleted)}
+                className="w-full min-h-[42px] px-3.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold inline-flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-xs"
+              >
+                <Edit3 className="w-3.5 h-3.5" />
+                <span>Zeiten oder Pausenzeit manuell anpassen</span>
+              </button>
+            )}
           </div>
         </div>
       )}

@@ -196,33 +196,6 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               </div>
             )}
           </div>
-
-          {/* Android Studio Gradle & Project Export */}
-          <div className="mt-5 pt-4 border-t border-slate-100">
-            <div className="flex items-center justify-between gap-2 mb-2">
-              <span className="text-xs font-bold text-slate-900">
-                Android Studio Projekt (.zip)
-              </span>
-              <span className="text-[11px] font-mono tabular-nums text-blue-700 font-semibold">
-                SDK 35 · Gradle 8.11 · com.example.myapplication
-              </span>
-            </div>
-            <p className="text-xs text-slate-500 mb-3 leading-relaxed">
-              Projektstruktur mit Ihrer exakten <code>app/build.gradle.kts</code>, Version Catalog (<code>libs.versions.toml</code>), GPS-Rechten und WebView ist im Repository eingerichtet.
-            </p>
-            <button
-              type="button"
-              onClick={async () => {
-                const { exportAndroidStudioProjectZip } = await import('../utils/androidExportService');
-                await exportAndroidStudioProjectZip();
-                onNotify('Android Studio Projekt (.zip) wurde heruntergeladen.');
-              }}
-              className="w-full min-h-[44px] px-4 rounded-xl border border-blue-300 bg-blue-50/60 hover:bg-blue-100/70 text-blue-900 text-xs font-semibold inline-flex items-center justify-center gap-2 transition-colors cursor-pointer"
-            >
-              <Download className="w-4 h-4 text-blue-700" />
-              <span>Android Studio Projekt (.zip) herunterladen</span>
-            </button>
-          </div>
         </div>
 
         <div className="p-5 space-y-3">

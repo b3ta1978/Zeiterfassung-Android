@@ -2,13 +2,14 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Building2,
   Clock,
-  FileText,
+  Edit3,
   Printer,
   Smartphone,
   Users,
   WifiOff,
 } from 'lucide-react';
 import { CustomerManagerView } from './components/CustomerManagerView';
+import { EditBookingModal } from './components/EditBookingModal';
 import { PrintableReportView } from './components/PrintableReportView';
 import { SettingsView } from './components/SettingsView';
 import { TimeTrackerCard } from './components/TimeTrackerCard';
@@ -94,6 +95,7 @@ export default function App() {
     getCurrentYearMonth()
   );
   const [selectedCustomerFilter, setSelectedCustomerFilter] = useState<string>('');
+  const [editingBooking, setEditingBooking] = useState<TimeEntry | null>(null);
 
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -291,30 +293,6 @@ export default function App() {
     [entries, profile, showNotification]
   );
 
-  const handleHeaderPrimaryExport = () => {
-    const activeEntries = entries.filter((e) => {
-      const matchesPeriod =
-        reportMode === 'day'
-          ? e.date === selectedDate
-          : e.date.startsWith(selectedMonth);
-      const matchesCust =
-        !selectedCustomerFilter || e.customerId === selectedCustomerFilter;
-      return matchesPeriod && matchesCust;
-    });
-    const custName = selectedCustomerFilter
-      ? customers.find((c) => c.id === selectedCustomerFilter)?.name
-      : undefined;
-
-    exportEntriesToPdf({
-      entries: activeEntries,
-      mode: reportMode,
-      selectedDate,
-      selectedMonth,
-      customerFilterName: custName,
-      profile,
-    });
-    showNotification('PDF-Nachweis wurde heruntergeladen.');
-  };
 
   const todayEntries = useMemo(() => {
     const today = getTodayIsoDate();
@@ -393,9 +371,9 @@ export default function App() {
             </button>
           </nav>
 
-          {/* Zone 3: 1 Primary Action */}
-          <div className="flex items-center shrink-0">
-            {canPromptNatively && !isInstalled ? (
+          {/* Zone 3 */}
+          {canPromptNatively && !isInstalled && (
+            <div className="flex items-center shrink-0">
               <button
                 type="button"
                 onClick={() => {
@@ -408,17 +386,8 @@ export default function App() {
                 <Smartphone className="w-3.5 h-3.5 shrink-0" />
                 <span>App installieren</span>
               </button>
-            ) : (
-              <button
-                type="button"
-                onClick={handleHeaderPrimaryExport}
-                className="min-h-[36px] md:min-h-[40px] px-3.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold inline-flex items-center gap-1.5 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
-              >
-                <FileText className="w-3.5 h-3.5 shrink-0" />
-                <span>PDF Export</span>
-              </button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </header>
 
@@ -450,6 +419,7 @@ export default function App() {
                 onJumpToDayPrint={handleJumpToDayPrint}
                 onExportDayPdf={handleQuickDayPdf}
                 onExportDayExcel={handleQuickDayExcel}
+                onEditEntry={setEditingBooking}
               />
 
               {/* Mobile Today Summary Card (visible below tracker on mobile/tablet) */}
@@ -483,7 +453,7 @@ export default function App() {
                 ) : (
                   <div className="divide-y divide-slate-100">
                     {todayEntries.map((entry) => (
-                      <div key={entry.id} className="py-3 flex items-start justify-between gap-3">
+                      <div key={entry.id} className="py-3 flex items-center justify-between gap-3">
                         <div className="min-w-0">
                           <div className="text-sm font-semibold text-slate-900 truncate">
                             {entry.customerName}
@@ -491,14 +461,29 @@ export default function App() {
                           <div className="text-xs text-slate-500 truncate mt-0.5">
                             {formatFullAddress(entry)}
                           </div>
-                        </div>
-                        <div className="text-right font-mono tabular-nums shrink-0">
-                          <div className="text-xs font-semibold text-slate-900">
+                          <div className="text-xs text-slate-600 font-mono tabular-nums mt-0.5">
                             {entry.startTime} – {entry.endTime}
+                            {entry.breakMinutes > 0 ? ` · Pause: ${entry.breakMinutes} Min.` : ''}
                           </div>
-                          <div className="text-xs text-blue-700 font-bold">
-                            {formatMinutesAsHHMM(entry.durationMinutes)} Std.
+                        </div>
+                        <div className="flex items-center gap-2.5 shrink-0">
+                          <div className="text-right font-mono tabular-nums">
+                            <div className="text-xs text-blue-700 font-bold">
+                              {formatMinutesAsHHMM(entry.durationMinutes)} Std.
+                            </div>
+                            <div className="text-[11px] text-slate-500">
+                              {formatMinutesAsDecimalGerman(entry.durationMinutes)} h
+                            </div>
                           </div>
+                          <button
+                            type="button"
+                            onClick={() => setEditingBooking(entry)}
+                            className="min-h-[38px] px-2.5 rounded-lg border border-slate-300 hover:border-blue-400 hover:bg-blue-50 text-xs font-semibold text-slate-700 hover:text-blue-700 inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+                            aria-label="Buchung bearbeiten"
+                          >
+                            <Edit3 className="w-3.5 h-3.5 text-blue-700" />
+                            <span>Anpassen</span>
+                          </button>
                         </div>
                       </div>
                     ))}
@@ -685,6 +670,18 @@ export default function App() {
           </span>
         </button>
       </nav>
+
+      {/* Edit Booking Modal (Manual time and break adjustment) */}
+      <EditBookingModal
+        entry={editingBooking}
+        customers={customers}
+        isOpen={Boolean(editingBooking)}
+        onClose={() => setEditingBooking(null)}
+        onSave={(updated) => {
+          handleUpdateEntry(updated);
+          showNotification('Buchungszeiten und Pause erfolgreich aktualisiert.');
+        }}
+      />
 
       {/* Toast Feedback */}
       {toastMessage && (

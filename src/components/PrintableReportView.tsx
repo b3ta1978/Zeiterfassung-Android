@@ -21,6 +21,7 @@ import {
   exportEntriesToExcel,
   exportEntriesToPdf,
 } from '../utils/exportService';
+import { EditBookingModal } from './EditBookingModal';
 import {
   calculateDurationMinutes,
   formatIsoDateGerman,
@@ -574,211 +575,17 @@ export const PrintableReportView: React.FC<PrintableReportViewProps> = ({
         </div>
       </div>
 
-      {/* Edit Entry Modal */}
-      {editingEntry && (
-        <div
-          className="no-print fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4"
-          onClick={() => setEditingEntry(null)}
-        >
-          <div
-            className="w-full sm:max-w-lg bg-white rounded-t-3xl sm:rounded-2xl shadow-xl border border-slate-200 max-h-[92vh] overflow-y-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
-              <h3 className="text-base font-bold text-slate-900">
-                Einsatz bearbeiten
-              </h3>
-              <button
-                type="button"
-                onClick={() => setEditingEntry(null)}
-                className="min-h-[40px] min-w-[40px] flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <form onSubmit={handleSaveEditedEntry} className="p-5 space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Kunde
-                </label>
-                <select
-                  value={editingEntry.customerId}
-                  onChange={(e) => {
-                    const found = customers.find((c) => c.id === e.target.value);
-                    setEditingEntry({
-                      ...editingEntry,
-                      customerId: e.target.value,
-                      customerName: found ? found.name : editingEntry.customerName,
-                      customerNumber: found?.customerNumber,
-                    });
-                  }}
-                  className="w-full min-h-[44px] px-3 rounded-xl border border-slate-300 bg-white text-sm text-slate-900"
-                >
-                  {customers.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="grid grid-cols-3 gap-2.5">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Datum
-                  </label>
-                  <input
-                    type="date"
-                    value={editingEntry.date}
-                    onChange={(e) =>
-                      setEditingEntry({ ...editingEntry, date: e.target.value })
-                    }
-                    className="w-full min-h-[44px] px-2.5 rounded-xl border border-slate-300 text-sm font-mono tabular-nums"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Anfangszeit
-                  </label>
-                  <input
-                    type="time"
-                    value={editingEntry.startTime}
-                    onChange={(e) =>
-                      setEditingEntry({ ...editingEntry, startTime: e.target.value })
-                    }
-                    className="w-full min-h-[44px] px-2.5 rounded-xl border border-slate-300 text-sm font-mono tabular-nums"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Endzeit
-                  </label>
-                  <input
-                    type="time"
-                    value={editingEntry.endTime}
-                    onChange={(e) =>
-                      setEditingEntry({ ...editingEntry, endTime: e.target.value })
-                    }
-                    className="w-full min-h-[44px] px-2.5 rounded-xl border border-slate-300 text-sm font-mono tabular-nums"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-12 gap-2.5">
-                <div className="col-span-8">
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Straße
-                  </label>
-                  <input
-                    type="text"
-                    value={editingEntry.street}
-                    onChange={(e) =>
-                      setEditingEntry({ ...editingEntry, street: e.target.value })
-                    }
-                    className="w-full min-h-[44px] px-3 rounded-xl border border-slate-300 text-sm"
-                  />
-                </div>
-                <div className="col-span-4">
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Hausnr.
-                  </label>
-                  <input
-                    type="text"
-                    value={editingEntry.houseNumber}
-                    onChange={(e) =>
-                      setEditingEntry({
-                        ...editingEntry,
-                        houseNumber: e.target.value,
-                      })
-                    }
-                    className="w-full min-h-[44px] px-3 rounded-xl border border-slate-300 text-sm"
-                  />
-                </div>
-                <div className="col-span-4">
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    PLZ
-                  </label>
-                  <input
-                    type="text"
-                    value={editingEntry.postalCode}
-                    onChange={(e) =>
-                      setEditingEntry({
-                        ...editingEntry,
-                        postalCode: e.target.value,
-                      })
-                    }
-                    className="w-full min-h-[44px] px-3 rounded-xl border border-slate-300 text-sm font-mono tabular-nums"
-                  />
-                </div>
-                <div className="col-span-8">
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Ort
-                  </label>
-                  <input
-                    type="text"
-                    value={editingEntry.city}
-                    onChange={(e) =>
-                      setEditingEntry({ ...editingEntry, city: e.target.value })
-                    }
-                    className="w-full min-h-[44px] px-3 rounded-xl border border-slate-300 text-sm"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-12 gap-2.5">
-                <div className="col-span-4">
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Pause (Min.)
-                  </label>
-                  <input
-                    type="number"
-                    min={0}
-                    max={480}
-                    value={editingEntry.breakMinutes}
-                    onChange={(e) =>
-                      setEditingEntry({
-                        ...editingEntry,
-                        breakMinutes: Math.max(0, Number(e.target.value) || 0),
-                      })
-                    }
-                    className="w-full min-h-[44px] px-3 rounded-xl border border-slate-300 text-sm font-mono tabular-nums"
-                  />
-                </div>
-                <div className="col-span-8">
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Tätigkeit / Notiz
-                  </label>
-                  <input
-                    type="text"
-                    value={editingEntry.note}
-                    onChange={(e) =>
-                      setEditingEntry({ ...editingEntry, note: e.target.value })
-                    }
-                    className="w-full min-h-[44px] px-3 rounded-xl border border-slate-300 text-sm"
-                  />
-                </div>
-              </div>
-
-              <div className="pt-2 flex items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => setEditingEntry(null)}
-                  className="flex-1 min-h-[46px] rounded-xl border border-slate-300 text-sm font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer"
-                >
-                  Abbrechen
-                </button>
-                <button
-                  type="submit"
-                  className="flex-1 min-h-[46px] rounded-xl bg-blue-700 hover:bg-blue-800 text-sm font-semibold text-white cursor-pointer"
-                >
-                  Änderungen speichern
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      {/* Reusable Edit Booking Modal with exact times & pause adjustment */}
+      <EditBookingModal
+        entry={editingEntry}
+        customers={customers}
+        isOpen={Boolean(editingEntry)}
+        onClose={() => setEditingEntry(null)}
+        onSave={(updated) => {
+          onUpdateEntry(updated);
+          onNotify('Buchungszeiten und Pausenzeit erfolgreich aktualisiert.');
+        }}
+      />
     </div>
   );
 };
