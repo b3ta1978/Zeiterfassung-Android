@@ -451,7 +451,7 @@ export const TimeTrackerCard: React.FC<TimeTrackerCardProps> = ({
             </span>
           </button>
 
-          <div className="mt-3 grid grid-cols-2 gap-2.5">
+          <div className="mt-3 grid grid-cols-2 gap-2.5 items-end">
             <div>
               <label className="block text-xs font-medium text-slate-600 mb-1">
                 Einsatzdatum
@@ -467,7 +467,7 @@ export const TimeTrackerCard: React.FC<TimeTrackerCardProps> = ({
             </div>
             <div>
               <label className="block text-xs font-medium text-slate-600 mb-1">
-                Anfangszeit (manuell anpassbar)
+                Anfangszeit
               </label>
               <input
                 type="time"
