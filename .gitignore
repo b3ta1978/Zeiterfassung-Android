@@ -12,3 +12,4 @@ coverage/
 .kotlin/
 local.properties
 *.apk
+!apk/Zeiterfassung.apk
